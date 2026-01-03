@@ -15,7 +15,7 @@ export default {
   	extend: {
   		fontFamily: {
   			sans: [
-  				'Inter',
+  				'Montserrat',
   				'ui-sans-serif',
   				'system-ui',
   				'sans-serif',
@@ -25,6 +25,7 @@ export default {
   				'Noto Color Emoji'
   			],
   			serif: [
+  				'Merriweather',
   				'ui-serif',
   				'Georgia',
   				'Cambria',
@@ -33,6 +34,7 @@ export default {
   				'serif'
   			],
   			mono: [
+  				'Cascadia Code',
   				'ui-monospace',
   				'SFMono-Regular',
   				'Menlo',
