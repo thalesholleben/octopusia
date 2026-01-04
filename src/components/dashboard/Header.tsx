@@ -1,4 +1,4 @@
-import { Octagon } from 'lucide-react';
+import octopusLogo from '@/assets/octopus-logo.svg';
 
 export function Header() {
   return (
@@ -6,7 +6,7 @@ export function Header() {
       <div className="container h-full flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Octagon className="w-8 h-8 text-primary" strokeWidth={2.5} />
+            <img src={octopusLogo} alt="Octopus IA" className="w-8 h-8" />
             <div className="absolute inset-0 blur-lg bg-primary/30 rounded-full" />
           </div>
           <div className="flex flex-col">

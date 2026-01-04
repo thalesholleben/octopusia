@@ -1,4 +1,4 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { FinanceRecord } from '@/types/financial';
 
 interface ExpensePieChartProps {
@@ -65,39 +65,48 @@ export function ExpensePieChart({ data }: ExpensePieChartProps) {
           Nenhum gasto no período
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height="85%">
-          <PieChart>
-            <Pie
-              data={chartData}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={100}
-              paddingAngle={2}
-              dataKey="value"
-              label={renderCustomLabel}
-              labelLine={false}
-            >
-              {chartData.map((_, index) => (
-                <Cell 
-                  key={`cell-${index}`} 
-                  fill={COLORS[index % COLORS.length]}
-                  stroke="hsl(var(--background))"
-                  strokeWidth={2}
-                />
+        <div className="flex h-[85%]">
+          <div className="w-1/2 h-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={chartData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={50}
+                  outerRadius={85}
+                  paddingAngle={2}
+                  dataKey="value"
+                  label={renderCustomLabel}
+                  labelLine={false}
+                >
+                  {chartData.map((_, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={COLORS[index % COLORS.length]}
+                      stroke="hsl(var(--background))"
+                      strokeWidth={2}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="w-1/2 h-full overflow-y-auto pr-2">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+              {chartData.map((item, index) => (
+                <div key={item.name} className="flex items-center gap-1.5">
+                  <div 
+                    className="w-2.5 h-2.5 rounded-sm shrink-0" 
+                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                  />
+                  <span className="text-xs text-muted-foreground truncate">{item.name}</span>
+                </div>
               ))}
-            </Pie>
-            <Tooltip content={<CustomTooltip />} />
-            <Legend 
-              layout="vertical"
-              align="right"
-              verticalAlign="middle"
-              formatter={(value) => (
-                <span className="text-xs text-muted-foreground">{value}</span>
-              )}
-            />
-          </PieChart>
-        </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
