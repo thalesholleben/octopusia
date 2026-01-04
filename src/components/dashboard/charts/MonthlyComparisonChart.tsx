@@ -38,7 +38,7 @@ export function MonthlyComparisonChart({ data }: MonthlyComparisonChartProps) {
       saidas: values.saidas,
     }))
     .sort((a, b) => a.month.localeCompare(b.month))
-    .slice(-6); // Last 6 months
+    .slice(-4); // Last 4 months
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
