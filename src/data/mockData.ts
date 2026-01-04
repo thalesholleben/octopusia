@@ -7,44 +7,50 @@ const generateDate = (daysAgo: number) => {
   return date.toISOString().split('T')[0];
 };
 
-export const mockFinanceRecords: FinanceRecord[] = [
-  // Entradas recentes
-  { id: 1, client_id: 554899999999, valor: 5500, de: 'Cliente ABC', para: 'Conta Principal', tipo: 'entrada', categoria: 'Site', data_comprovante: generateDate(2), created_at: new Date().toISOString() },
-  { id: 2, client_id: 554899999999, valor: 3200, de: 'Projeto X', para: 'Conta Principal', tipo: 'entrada', categoria: 'Automação', data_comprovante: generateDate(5), created_at: new Date().toISOString() },
-  { id: 3, client_id: 554899999999, valor: 1800, de: 'Logo Design', para: 'Conta Principal', tipo: 'entrada', categoria: 'Design', data_comprovante: generateDate(8), created_at: new Date().toISOString() },
-  { id: 4, client_id: 554899999999, valor: 4500, de: 'Cliente DEF', para: 'Conta Principal', tipo: 'entrada', categoria: 'Site', data_comprovante: generateDate(12), created_at: new Date().toISOString() },
-  { id: 5, client_id: 554899999999, valor: 2800, de: 'Automação CRM', para: 'Conta Principal', tipo: 'entrada', categoria: 'Automação', data_comprovante: generateDate(15), created_at: new Date().toISOString() },
-  { id: 6, client_id: 554899999999, valor: 6200, de: 'E-commerce GHI', para: 'Conta Principal', tipo: 'entrada', categoria: 'Site', data_comprovante: generateDate(18), created_at: new Date().toISOString() },
-  { id: 7, client_id: 554899999999, valor: 1500, de: 'Landing Page', para: 'Conta Principal', tipo: 'entrada', categoria: 'Design', data_comprovante: generateDate(22), created_at: new Date().toISOString() },
+// Generate data for last 6 months
+const generateMonthlyData = () => {
+  const records: FinanceRecord[] = [];
+  let id = 1;
   
-  // Saídas recentes
-  { id: 10, client_id: 554899999999, valor: 1500, de: 'Conta Principal', para: 'Proprietário', tipo: 'saida', categoria: 'Aluguel', data_comprovante: generateDate(1), created_at: new Date().toISOString() },
-  { id: 11, client_id: 554899999999, valor: 450, de: 'Conta Principal', para: 'CPFL', tipo: 'saida', categoria: 'Contas Fixas', data_comprovante: generateDate(3), created_at: new Date().toISOString() },
-  { id: 12, client_id: 554899999999, valor: 800, de: 'Conta Principal', para: 'Supermercado', tipo: 'saida', categoria: 'Alimentação', data_comprovante: generateDate(4), created_at: new Date().toISOString() },
-  { id: 13, client_id: 554899999999, valor: 120, de: 'Conta Principal', para: 'iFood', tipo: 'saida', categoria: 'FastFood', data_comprovante: generateDate(5), created_at: new Date().toISOString() },
-  { id: 14, client_id: 554899999999, valor: 350, de: 'Conta Principal', para: 'Uber/99', tipo: 'saida', categoria: 'Transporte', data_comprovante: generateDate(6), created_at: new Date().toISOString() },
-  { id: 15, client_id: 554899999999, valor: 280, de: 'Conta Principal', para: 'Farmácia', tipo: 'saida', categoria: 'Saúde', data_comprovante: generateDate(7), created_at: new Date().toISOString() },
-  { id: 16, client_id: 554899999999, valor: 200, de: 'Conta Principal', para: 'Material Escolar', tipo: 'saida', categoria: 'Filhos', data_comprovante: generateDate(9), created_at: new Date().toISOString() },
-  { id: 17, client_id: 554899999999, valor: 150, de: 'Conta Principal', para: 'Café/Coworking', tipo: 'saida', categoria: 'Trabalho', data_comprovante: generateDate(10), created_at: new Date().toISOString() },
-  { id: 18, client_id: 554899999999, valor: 89, de: 'Conta Principal', para: 'Figma', tipo: 'saida', categoria: 'Ferramentas', data_comprovante: generateDate(11), created_at: new Date().toISOString() },
-  { id: 19, client_id: 554899999999, valor: 300, de: 'Conta Principal', para: 'Cinema/Bar', tipo: 'saida', categoria: 'Lazer e Vida Social', data_comprovante: generateDate(13), created_at: new Date().toISOString() },
-  { id: 20, client_id: 554899999999, valor: 520, de: 'Conta Principal', para: 'Internet/Celular', tipo: 'saida', categoria: 'Contas Fixas', data_comprovante: generateDate(14), created_at: new Date().toISOString() },
-  { id: 21, client_id: 554899999999, valor: 950, de: 'Conta Principal', para: 'Supermercado', tipo: 'saida', categoria: 'Alimentação', data_comprovante: generateDate(16), created_at: new Date().toISOString() },
-  { id: 22, client_id: 554899999999, valor: 180, de: 'Conta Principal', para: 'iFood', tipo: 'saida', categoria: 'FastFood', data_comprovante: generateDate(17), created_at: new Date().toISOString() },
-  { id: 23, client_id: 554899999999, valor: 400, de: 'Conta Principal', para: 'Uber/99', tipo: 'saida', categoria: 'Transporte', data_comprovante: generateDate(19), created_at: new Date().toISOString() },
-  { id: 24, client_id: 554899999999, valor: 500, de: 'Conta Principal', para: 'Curso Online', tipo: 'saida', categoria: 'Educação', data_comprovante: generateDate(20), created_at: new Date().toISOString() },
-  { id: 25, client_id: 554899999999, valor: 600, de: 'Conta Principal', para: 'Cartão Nubank', tipo: 'saida', categoria: 'Dívidas', data_comprovante: generateDate(21), created_at: new Date().toISOString() },
-  { id: 26, client_id: 554899999999, valor: 1000, de: 'Conta Principal', para: 'Poupança', tipo: 'saida', categoria: 'Reserva', data_comprovante: generateDate(23), created_at: new Date().toISOString() },
-  { id: 27, client_id: 554899999999, valor: 250, de: 'Conta Principal', para: 'Viagem', tipo: 'saida', categoria: 'Objetivos', data_comprovante: generateDate(25), created_at: new Date().toISOString() },
-  { id: 28, client_id: 554899999999, valor: 350, de: 'Conta Principal', para: 'Conserto Celular', tipo: 'saida', categoria: 'Imprevistos', data_comprovante: generateDate(27), created_at: new Date().toISOString() },
-
+  for (let monthsAgo = 0; monthsAgo < 6; monthsAgo++) {
+    const baseDay = monthsAgo * 30;
+    
+    // Entradas do mês
+    records.push(
+      { id: id++, client_id: 554899999999, valor: 5500 + Math.random() * 2000, de: 'Cliente ABC', para: 'Conta Principal', tipo: 'entrada', categoria: 'Site', data_comprovante: generateDate(baseDay + 2), created_at: new Date().toISOString() },
+      { id: id++, client_id: 554899999999, valor: 3200 + Math.random() * 1000, de: 'Projeto X', para: 'Conta Principal', tipo: 'entrada', categoria: 'Automação', data_comprovante: generateDate(baseDay + 8), created_at: new Date().toISOString() },
+      { id: id++, client_id: 554899999999, valor: 1800 + Math.random() * 800, de: 'Logo Design', para: 'Conta Principal', tipo: 'entrada', categoria: 'Design', data_comprovante: generateDate(baseDay + 15), created_at: new Date().toISOString() },
+      { id: id++, client_id: 554899999999, valor: 2500 + Math.random() * 1500, de: 'Cliente DEF', para: 'Conta Principal', tipo: 'entrada', categoria: 'Site', data_comprovante: generateDate(baseDay + 22), created_at: new Date().toISOString() },
+    );
+    
+    // Saídas do mês
+    records.push(
+      { id: id++, client_id: 554899999999, valor: 1500, de: 'Conta Principal', para: 'Proprietário', tipo: 'saida', categoria: 'Aluguel', data_comprovante: generateDate(baseDay + 1), created_at: new Date().toISOString() },
+      { id: id++, client_id: 554899999999, valor: 450 + Math.random() * 100, de: 'Conta Principal', para: 'CPFL', tipo: 'saida', categoria: 'Contas Fixas', data_comprovante: generateDate(baseDay + 3), created_at: new Date().toISOString() },
+      { id: id++, client_id: 554899999999, valor: 800 + Math.random() * 300, de: 'Conta Principal', para: 'Supermercado', tipo: 'saida', categoria: 'Alimentação', data_comprovante: generateDate(baseDay + 5), created_at: new Date().toISOString() },
+      { id: id++, client_id: 554899999999, valor: 120 + Math.random() * 80, de: 'Conta Principal', para: 'iFood', tipo: 'saida', categoria: 'FastFood', data_comprovante: generateDate(baseDay + 7), created_at: new Date().toISOString() },
+      { id: id++, client_id: 554899999999, valor: 350 + Math.random() * 150, de: 'Conta Principal', para: 'Uber/99', tipo: 'saida', categoria: 'Transporte', data_comprovante: generateDate(baseDay + 10), created_at: new Date().toISOString() },
+      { id: id++, client_id: 554899999999, valor: 280 + Math.random() * 200, de: 'Conta Principal', para: 'Farmácia', tipo: 'saida', categoria: 'Saúde', data_comprovante: generateDate(baseDay + 12), created_at: new Date().toISOString() },
+      { id: id++, client_id: 554899999999, valor: 200 + Math.random() * 100, de: 'Conta Principal', para: 'Material Escolar', tipo: 'saida', categoria: 'Filhos', data_comprovante: generateDate(baseDay + 14), created_at: new Date().toISOString() },
+      { id: id++, client_id: 554899999999, valor: 300 + Math.random() * 200, de: 'Conta Principal', para: 'Cinema/Bar', tipo: 'saida', categoria: 'Lazer e Vida Social', data_comprovante: generateDate(baseDay + 18), created_at: new Date().toISOString() },
+      { id: id++, client_id: 554899999999, valor: 500 + Math.random() * 200, de: 'Conta Principal', para: 'Curso Online', tipo: 'saida', categoria: 'Educação', data_comprovante: generateDate(baseDay + 20), created_at: new Date().toISOString() },
+      { id: id++, client_id: 554899999999, valor: 1000, de: 'Conta Principal', para: 'Poupança', tipo: 'saida', categoria: 'Reserva', data_comprovante: generateDate(baseDay + 25), created_at: new Date().toISOString() },
+    );
+  }
+  
   // Dados de outro cliente
-  { id: 30, client_id: 554888888888, valor: 8000, de: 'Empresa XYZ', para: 'Conta', tipo: 'entrada', categoria: 'Site', data_comprovante: generateDate(3), created_at: new Date().toISOString() },
-  { id: 31, client_id: 554888888888, valor: 4500, de: 'Consultoria', para: 'Conta', tipo: 'entrada', categoria: 'Automação', data_comprovante: generateDate(10), created_at: new Date().toISOString() },
-  { id: 32, client_id: 554888888888, valor: 2000, de: 'Conta', para: 'Aluguel', tipo: 'saida', categoria: 'Aluguel', data_comprovante: generateDate(5), created_at: new Date().toISOString() },
-  { id: 33, client_id: 554888888888, valor: 1200, de: 'Conta', para: 'Mercado', tipo: 'saida', categoria: 'Alimentação', data_comprovante: generateDate(8), created_at: new Date().toISOString() },
-  { id: 34, client_id: 554888888888, valor: 800, de: 'Conta', para: 'Investimentos', tipo: 'saida', categoria: 'Reserva', data_comprovante: generateDate(12), created_at: new Date().toISOString() },
-];
+  records.push(
+    { id: id++, client_id: 554888888888, valor: 8000, de: 'Empresa XYZ', para: 'Conta', tipo: 'entrada', categoria: 'Site', data_comprovante: generateDate(3), created_at: new Date().toISOString() },
+    { id: id++, client_id: 554888888888, valor: 4500, de: 'Consultoria', para: 'Conta', tipo: 'entrada', categoria: 'Automação', data_comprovante: generateDate(10), created_at: new Date().toISOString() },
+    { id: id++, client_id: 554888888888, valor: 2000, de: 'Conta', para: 'Aluguel', tipo: 'saida', categoria: 'Aluguel', data_comprovante: generateDate(5), created_at: new Date().toISOString() },
+    { id: id++, client_id: 554888888888, valor: 1200, de: 'Conta', para: 'Mercado', tipo: 'saida', categoria: 'Alimentação', data_comprovante: generateDate(8), created_at: new Date().toISOString() },
+    { id: id++, client_id: 554888888888, valor: 800, de: 'Conta', para: 'Investimentos', tipo: 'saida', categoria: 'Reserva', data_comprovante: generateDate(12), created_at: new Date().toISOString() },
+  );
+  
+  return records;
+};
+
+export const mockFinanceRecords: FinanceRecord[] = generateMonthlyData();
 
 // Dados de investimentos mock
 export const mockInvestments = {

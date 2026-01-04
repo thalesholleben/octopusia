@@ -38,7 +38,9 @@ export function MonthlyComparisonChart({ data }: MonthlyComparisonChartProps) {
       saidas: values.saidas,
     }))
     .sort((a, b) => a.month.localeCompare(b.month))
-    .slice(-4); // Last 4 months
+    .slice(-6); // Last 6 months
+  
+  const chartWidth = Math.max(100, chartData.length * 120); // 120px per month pair
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -72,41 +74,46 @@ export function MonthlyComparisonChart({ data }: MonthlyComparisonChartProps) {
           Nenhum dado disponível
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height="85%">
-          <BarChart data={chartData} barGap={8}>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-            <XAxis 
-              dataKey="monthLabel" 
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-              stroke="hsl(var(--border))"
-            />
-            <YAxis 
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-              tickFormatter={(value) => `R$${(value / 1000).toFixed(0)}k`}
-              stroke="hsl(var(--border))"
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend 
-              formatter={(value) => (
-                <span className="text-xs text-muted-foreground capitalize">{value}</span>
-              )}
-            />
-            <Bar 
-              dataKey="entradas" 
-              name="Entradas" 
-              fill="#22c55e" 
-              radius={[4, 4, 0, 0]}
-              maxBarSize={40}
-            />
-            <Bar 
-              dataKey="saidas" 
-              name="Saídas" 
-              fill="#ef4444" 
-              radius={[4, 4, 0, 0]}
-              maxBarSize={40}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+        <div className="overflow-x-auto scrollbar-hide" style={{ height: '85%' }}>
+          <div style={{ width: `${chartWidth}px`, minWidth: '100%', height: '100%' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} barGap={4} barCategoryGap="20%">
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <XAxis 
+                  dataKey="monthLabel" 
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
+                  stroke="hsl(var(--border))"
+                />
+                <YAxis 
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
+                  tickFormatter={(value) => `R$${(value / 1000).toFixed(0)}k`}
+                  stroke="hsl(var(--border))"
+                  width={55}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend 
+                  formatter={(value) => (
+                    <span className="text-xs text-muted-foreground capitalize">{value}</span>
+                  )}
+                />
+                <Bar 
+                  dataKey="entradas" 
+                  name="Entradas" 
+                  fill="hsl(var(--success))" 
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={35}
+                />
+                <Bar 
+                  dataKey="saidas" 
+                  name="Saídas" 
+                  fill="hsl(var(--destructive))" 
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={35}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       )}
     </div>
   );
