@@ -16,6 +16,7 @@ import { ExpensePieChart } from '@/components/dashboard/charts/ExpensePieChart';
 import { EvolutionLineChart } from '@/components/dashboard/charts/EvolutionLineChart';
 import { MonthlyComparisonChart } from '@/components/dashboard/charts/MonthlyComparisonChart';
 import { CategoryRankingChart } from '@/components/dashboard/charts/CategoryRankingChart';
+import { CategoryEvolutionChart } from '@/components/dashboard/charts/CategoryEvolutionChart';
 import { useFinancialData } from '@/hooks/useFinancialData';
 import { mockAIAlerts, getUniqueClients, mockInvestments } from '@/data/mockData';
 import { DateFilter } from '@/types/financial';
@@ -133,11 +134,16 @@ const Index = () => {
         </div>
 
         {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <ExpensePieChart data={data} />
           <EvolutionLineChart data={data} />
           <MonthlyComparisonChart data={data} />
           <CategoryRankingChart data={data} />
+        </div>
+        
+        {/* Category Evolution Chart - Full Width */}
+        <div className="mb-6">
+          <CategoryEvolutionChart data={data} />
         </div>
       </main>
     </div>
