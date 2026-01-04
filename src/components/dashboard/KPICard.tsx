@@ -67,38 +67,37 @@ export function KPICard({
   return (
     <div 
       className={cn(
-        'card-float p-5 opacity-0 animate-fade-up',
+        'card-float p-4 opacity-0 animate-fade-up',
         getVariantStyles()
       )}
       style={{ animationDelay: `${delay}ms`, animationFillMode: 'forwards' }}
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className={cn('p-2.5 rounded-xl', getIconBg())}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0 space-y-1">
+          <p className="kpi-label">{title}</p>
+          <p className={cn(
+            'kpi-value',
+            variant === 'positive' && 'text-success',
+            variant === 'negative' && 'text-destructive'
+          )}>
+            {value}
+          </p>
+          {subtitle && (
+            <p className="text-[10px] text-muted-foreground truncate">{subtitle}</p>
+          )}
+          {trend && (
+            <div className="flex items-center gap-2">
+              <div className={cn('flex items-center gap-1 text-xs font-medium', getTrendClass())}>
+                {getTrendIcon()}
+                <span>{Math.abs(trend.value)}%</span>
+              </div>
+              <p className="text-[10px] text-muted-foreground truncate">{trend.label}</p>
+            </div>
+          )}
+        </div>
+        <div className={cn('p-2 rounded-lg shrink-0', getIconBg())}>
           {icon}
         </div>
-        {trend && (
-          <div className={cn('flex items-center gap-1 text-sm font-medium', getTrendClass())}>
-            {getTrendIcon()}
-            <span>{Math.abs(trend.value)}%</span>
-          </div>
-        )}
-      </div>
-      
-      <div className="space-y-1">
-        <p className="kpi-label">{title}</p>
-        <p className={cn(
-          'kpi-value',
-          variant === 'positive' && 'text-success',
-          variant === 'negative' && 'text-destructive'
-        )}>
-          {value}
-        </p>
-        {subtitle && (
-          <p className="text-xs text-muted-foreground">{subtitle}</p>
-        )}
-        {trend && (
-          <p className="text-xs text-muted-foreground">{trend.label}</p>
-        )}
       </div>
     </div>
   );

@@ -29,8 +29,8 @@ export function CategoryRankingChart({ data }: CategoryRankingChartProps) {
   const totalExpenses = Object.values(categoryTotals).reduce((sum, val) => sum + val, 0);
 
   return (
-    <div className="card-float p-6 h-[400px] opacity-0 animate-fade-up" style={{ animationDelay: '1000ms', animationFillMode: 'forwards' }}>
-      <div className="flex items-center justify-between mb-6">
+    <div className="card-float p-6 h-[400px] flex flex-col opacity-0 animate-fade-up" style={{ animationDelay: '1000ms', animationFillMode: 'forwards' }}>
+      <div className="flex items-center justify-between mb-4 shrink-0">
         <h3 className="text-lg font-semibold text-foreground">Ranking de Gastos</h3>
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <TrendingDown className="w-4 h-4" />
@@ -39,11 +39,11 @@ export function CategoryRankingChart({ data }: CategoryRankingChartProps) {
       </div>
       
       {sortedCategories.length === 0 ? (
-        <div className="h-full flex items-center justify-center text-muted-foreground">
+        <div className="flex-1 flex items-center justify-center text-muted-foreground">
           Nenhum gasto no período
         </div>
       ) : (
-        <div className="space-y-5">
+        <div className="flex-1 overflow-y-auto space-y-4 pr-2">
           {sortedCategories.map(([category, value], index) => {
             const percentage = ((value / totalExpenses) * 100).toFixed(1);
             const barWidth = (value / maxValue) * 100;
