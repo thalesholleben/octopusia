@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Wallet, 
   TrendingUp, 
@@ -6,7 +7,8 @@ import {
   PiggyBank, 
   Tag,
   BarChart3,
-  Landmark
+  Landmark,
+  LogOut
 } from 'lucide-react';
 import { Header } from '@/components/dashboard/Header';
 import { FilterBar } from '@/components/dashboard/FilterBar';
@@ -18,15 +20,29 @@ import { MonthlyComparisonChart } from '@/components/dashboard/charts/MonthlyCom
 import { CategoryRankingChart } from '@/components/dashboard/charts/CategoryRankingChart';
 import { CategoryEvolutionChart } from '@/components/dashboard/charts/CategoryEvolutionChart';
 import { useFinancialData } from '@/hooks/useFinancialData';
+import { useFinancialDataDB } from '@/hooks/useFinancialDataDB';
+import { useAuth } from '@/contexts/AuthContext';
 import { mockAIAlerts, getUniqueClients, mockInvestments } from '@/data/mockData';
 import { DateFilter } from '@/types/financial';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
+  const { user, loading: authLoading, signOut } = useAuth();
+  const navigate = useNavigate();
+  
   const [dateFilter, setDateFilter] = useState<DateFilter>({ type: 'last30days' });
   const [selectedClient, setSelectedClient] = useState<number | null>(554899999999);
   
   const clients = getUniqueClients();
-  const { data, kpis } = useFinancialData(dateFilter, selectedClient);
+  
+  // Use DB data if user is logged in, otherwise use mock data
+  const mockData = useFinancialData(dateFilter, selectedClient);
+  const dbData = useFinancialDataDB(dateFilter);
+  
+  // Decide which data source to use
+  const useDbData = user && !dbData.isEmpty;
+  const data = useDbData ? dbData.data : mockData.data;
+  const kpis = useDbData ? dbData.kpis : mockData.kpis;
   
   const filteredAlerts = selectedClient 
     ? mockAIAlerts.filter(a => a.client_id === selectedClient)
@@ -39,6 +55,19 @@ const Index = () => {
     }).format(value);
   };
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-pulse text-muted-foreground">Carregando...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background bg-grid-pattern">
       <Header />
@@ -50,16 +79,37 @@ const Index = () => {
             <div>
               <h1 className="text-2xl font-bold text-foreground">Dashboard Financeiro</h1>
               <p className="text-sm text-muted-foreground mt-1">
-                Acompanhe suas finanças em tempo real
+                {user ? `Bem-vindo de volta!` : 'Acompanhe suas finanças em tempo real'}
               </p>
             </div>
-            <FilterBar
-              dateFilter={dateFilter}
-              onDateFilterChange={setDateFilter}
-              selectedClient={selectedClient}
-              onClientChange={setSelectedClient}
-              clients={clients}
-            />
+            <div className="flex items-center gap-4">
+              <FilterBar
+                dateFilter={dateFilter}
+                onDateFilterChange={setDateFilter}
+                selectedClient={useDbData ? null : selectedClient}
+                onClientChange={setSelectedClient}
+                clients={useDbData ? [] : clients}
+              />
+              {user ? (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleSignOut}
+                  className="gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sair
+                </Button>
+              ) : (
+                <Button 
+                  variant="default" 
+                  size="sm" 
+                  onClick={() => navigate('/auth')}
+                >
+                  Entrar
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 

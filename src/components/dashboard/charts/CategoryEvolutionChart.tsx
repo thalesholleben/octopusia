@@ -9,49 +9,70 @@ import {
 } from 'recharts';
 import { FinanceRecord, EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '@/types/financial';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { format, parseISO } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface CategoryEvolutionChartProps {
   data: FinanceRecord[];
 }
 
 export function CategoryEvolutionChart({ data }: CategoryEvolutionChartProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>(EXPENSE_CATEGORIES[0]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showIncome, setShowIncome] = useState(false);
 
-  const allCategories = useMemo(() => {
-    return [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
-  }, []);
+  // Get categories that have data
+  const categoriesWithData = useMemo(() => {
+    const expenseCategories = new Set(
+      data.filter(r => r.tipo === 'saida').map(r => r.categoria)
+    );
+    const incomeCategories = new Set(
+      data.filter(r => r.tipo === 'entrada').map(r => r.categoria)
+    );
+    return {
+      expense: EXPENSE_CATEGORIES.filter(c => expenseCategories.has(c)),
+      income: INCOME_CATEGORIES.filter(c => incomeCategories.has(c)),
+    };
+  }, [data]);
 
   const chartData = useMemo(() => {
-    const filtered = data.filter(r => r.categoria === selectedCategory);
-    
-    const grouped = filtered.reduce((acc, record) => {
-      const date = record.data_comprovante;
-      if (!acc[date]) {
-        acc[date] = { date, saidas: 0, entradas: 0 };
-      }
-      if (record.tipo === 'saida') {
-        acc[date].saidas += record.valor;
-      } else {
-        acc[date].entradas += record.valor;
-      }
-      return acc;
-    }, {} as Record<string, { date: string; saidas: number; entradas: number }>);
+    // Group data by month
+    const monthlyData: Record<string, { saidas: number; entradas: number }> = {};
 
-    return Object.values(grouped)
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-      .map(item => ({
-        ...item,
-        dateFormatted: new Date(item.date).toLocaleDateString('pt-BR', { 
-          day: '2-digit', 
-          month: 'short' 
-        })
+    data.forEach(record => {
+      const date = parseISO(record.data_comprovante);
+      const monthKey = format(date, 'yyyy-MM');
+      
+      // Filter by category if selected
+      if (selectedCategory !== 'all' && record.categoria !== selectedCategory) {
+        return;
+      }
+
+      if (!monthlyData[monthKey]) {
+        monthlyData[monthKey] = { saidas: 0, entradas: 0 };
+      }
+
+      if (record.tipo === 'saida') {
+        monthlyData[monthKey].saidas += record.valor;
+      } else {
+        monthlyData[monthKey].entradas += record.valor;
+      }
+    });
+
+    // Sort and format
+    return Object.entries(monthlyData)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([monthKey, values]) => ({
+        month: monthKey,
+        monthFormatted: format(parseISO(`${monthKey}-01`), 'MMM/yy', { locale: ptBR }),
+        saidas: values.saidas,
+        entradas: values.entradas,
       }));
   }, [data, selectedCategory]);
 
-  const isExpenseCategory = (EXPENSE_CATEGORIES as readonly string[]).includes(selectedCategory);
+  const isExpenseCategory = selectedCategory === 'all' || 
+    (EXPENSE_CATEGORIES as readonly string[]).includes(selectedCategory);
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -71,36 +92,51 @@ export function CategoryEvolutionChart({ data }: CategoryEvolutionChartProps) {
 
   return (
     <div className="card-float p-6 h-[400px] flex flex-col opacity-0 animate-fade-up" style={{ animationDelay: '1200ms', animationFillMode: 'forwards' }}>
-      <div className="flex items-center justify-between mb-4 shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 shrink-0">
         <h3 className="text-lg font-semibold text-foreground">Evolução por Categoria</h3>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <Checkbox 
+            <Switch 
               id="showIncome" 
               checked={showIncome}
-              onCheckedChange={(checked) => setShowIncome(checked as boolean)}
+              onCheckedChange={setShowIncome}
             />
             <Label htmlFor="showIncome" className="text-xs text-muted-foreground cursor-pointer">
               Mostrar Entradas
             </Label>
           </div>
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-[180px] h-8 text-xs">
+            <SelectTrigger className="w-[160px] h-8 text-xs">
               <SelectValue placeholder="Categoria" />
             </SelectTrigger>
             <SelectContent>
-              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Saídas</div>
-              {EXPENSE_CATEGORIES.map(cat => (
-                <SelectItem key={cat} value={cat} className="text-xs">
-                  {cat}
-                </SelectItem>
-              ))}
-              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">Entradas</div>
-              {INCOME_CATEGORIES.map(cat => (
-                <SelectItem key={cat} value={cat} className="text-xs">
-                  {cat}
-                </SelectItem>
-              ))}
+              <SelectItem value="all" className="text-xs font-medium">
+                Todas as Categorias
+              </SelectItem>
+              {categoriesWithData.expense.length > 0 && (
+                <>
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">
+                    Saídas
+                  </div>
+                  {categoriesWithData.expense.map(cat => (
+                    <SelectItem key={cat} value={cat} className="text-xs">
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </>
+              )}
+              {categoriesWithData.income.length > 0 && (
+                <>
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">
+                    Entradas
+                  </div>
+                  {categoriesWithData.income.map(cat => (
+                    <SelectItem key={cat} value={cat} className="text-xs">
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </>
+              )}
             </SelectContent>
           </Select>
         </div>
@@ -108,24 +144,24 @@ export function CategoryEvolutionChart({ data }: CategoryEvolutionChartProps) {
       
       {chartData.length === 0 ? (
         <div className="flex-1 flex items-center justify-center text-muted-foreground">
-          Nenhum dado para "{selectedCategory}" no período
+          Nenhum dado disponível para o período selecionado
         </div>
       ) : (
         <div className="flex-1">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <defs>
-                <linearGradient id="colorSaidas" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id="colorSaidasEvol" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="hsl(var(--destructive))" stopOpacity={0.4}/>
                   <stop offset="95%" stopColor="hsl(var(--destructive))" stopOpacity={0}/>
                 </linearGradient>
-                <linearGradient id="colorEntradas" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id="colorEntradasEvol" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.4}/>
                   <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0}/>
                 </linearGradient>
               </defs>
               <XAxis 
-                dataKey="dateFormatted" 
+                dataKey="monthFormatted" 
                 axisLine={false}
                 tickLine={false}
                 tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
@@ -134,8 +170,8 @@ export function CategoryEvolutionChart({ data }: CategoryEvolutionChartProps) {
                 axisLine={false}
                 tickLine={false}
                 tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
-                tickFormatter={(value) => `R$${(value/1000).toFixed(0)}k`}
-                width={50}
+                tickFormatter={(value) => value >= 1000 ? `R$${(value/1000).toFixed(0)}k` : `R$${value}`}
+                width={55}
               />
               <Tooltip content={<CustomTooltip />} />
               
@@ -146,22 +182,22 @@ export function CategoryEvolutionChart({ data }: CategoryEvolutionChartProps) {
                   name="Saídas"
                   stroke="hsl(var(--destructive))"
                   strokeWidth={2}
-                  fill="url(#colorSaidas)"
-                  dot={{ fill: 'hsl(var(--destructive))', strokeWidth: 0, r: 3 }}
-                  activeDot={{ r: 5, strokeWidth: 0 }}
+                  fill="url(#colorSaidasEvol)"
+                  dot={{ fill: 'hsl(var(--destructive))', strokeWidth: 0, r: 4 }}
+                  activeDot={{ r: 6, strokeWidth: 0 }}
                 />
               )}
               
-              {(showIncome || !isExpenseCategory) && (
+              {showIncome && (
                 <Area
                   type="monotone"
                   dataKey="entradas"
                   name="Entradas"
                   stroke="hsl(var(--success))"
                   strokeWidth={2}
-                  fill="url(#colorEntradas)"
-                  dot={{ fill: 'hsl(var(--success))', strokeWidth: 0, r: 3 }}
-                  activeDot={{ r: 5, strokeWidth: 0 }}
+                  fill="url(#colorEntradasEvol)"
+                  dot={{ fill: 'hsl(var(--success))', strokeWidth: 0, r: 4 }}
+                  activeDot={{ r: 6, strokeWidth: 0 }}
                 />
               )}
             </AreaChart>
