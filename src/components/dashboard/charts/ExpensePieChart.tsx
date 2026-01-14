@@ -1,5 +1,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { FinanceRecord } from '@/types/financial';
+import { PieChart as PieChartIcon } from 'lucide-react';
 
 interface ExpensePieChartProps {
   data: FinanceRecord[];
@@ -52,29 +53,30 @@ export function ExpensePieChart({ data }: ExpensePieChartProps) {
   };
 
   const renderCustomLabel = ({ name, percent }: any) => {
-    if (percent < 0.05) return null;
+    if (percent < 0.08) return null;
     return `${(percent * 100).toFixed(0)}%`;
   };
 
   return (
-    <div className="card-float p-6 h-[400px] opacity-0 animate-fade-up" style={{ animationDelay: '700ms', animationFillMode: 'forwards' }}>
-      <h3 className="text-lg font-semibold text-foreground mb-4">Distribuição de Gastos</h3>
+    <div className="card-float p-4 sm:p-6 h-[320px] sm:h-[400px] opacity-0 animate-fade-up" style={{ animationDelay: '700ms', animationFillMode: 'forwards' }}>
+      <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">Distribuição de Gastos</h3>
       
       {chartData.length === 0 ? (
-        <div className="h-full flex items-center justify-center text-muted-foreground">
-          Nenhum gasto no período
+        <div className="h-[calc(100%-40px)] flex flex-col items-center justify-center text-muted-foreground gap-3">
+          <PieChartIcon className="w-12 h-12 opacity-30" />
+          <p className="text-sm">Nenhum gasto no período</p>
         </div>
       ) : (
-        <div className="flex h-[85%]">
-          <div className="w-1/2 h-full">
+        <div className="flex flex-col sm:flex-row h-[calc(100%-40px)]">
+          <div className="w-full sm:w-1/2 h-[180px] sm:h-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={chartData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={50}
-                  outerRadius={85}
+                  innerRadius={35}
+                  outerRadius={65}
                   paddingAngle={2}
                   dataKey="value"
                   label={renderCustomLabel}
@@ -93,15 +95,15 @@ export function ExpensePieChart({ data }: ExpensePieChartProps) {
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <div className="w-1/2 h-full overflow-y-auto pr-2">
-            <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+          <div className="w-full sm:w-1/2 h-auto sm:h-full overflow-y-auto pt-2 sm:pt-0 sm:pl-2">
+            <div className="grid grid-cols-2 gap-x-2 gap-y-1">
               {chartData.map((item, index) => (
                 <div key={item.name} className="flex items-center gap-1.5">
                   <div 
-                    className="w-2.5 h-2.5 rounded-sm shrink-0" 
+                    className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-sm shrink-0" 
                     style={{ backgroundColor: COLORS[index % COLORS.length] }}
                   />
-                  <span className="text-xs text-muted-foreground truncate">{item.name}</span>
+                  <span className="text-[10px] sm:text-xs text-muted-foreground truncate">{item.name}</span>
                 </div>
               ))}
             </div>

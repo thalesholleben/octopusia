@@ -28,6 +28,14 @@ interface FilterBarProps {
 
 const dateFilterLabels: Record<DateFilterType, string> = {
   today: 'Hoje',
+  last7days: '7 dias',
+  last30days: '30 dias',
+  thisMonth: 'Mês atual',
+  custom: 'Personalizado',
+};
+
+const dateFilterLabelsFull: Record<DateFilterType, string> = {
+  today: 'Hoje',
   last7days: 'Últimos 7 dias',
   last30days: 'Últimos 30 dias',
   thisMonth: 'Mês atual',
@@ -66,7 +74,7 @@ export function FilterBar({
 
   const selectedClientLabel = selectedClient
     ? clients.find(c => c.id === selectedClient)?.label || 'Selecionar'
-    : 'Todos os clientes';
+    : 'Todos';
 
   const getDateFilterDisplay = () => {
     if (dateFilter.type === 'custom' && dateFilter.startDate && dateFilter.endDate) {
@@ -76,21 +84,21 @@ export function FilterBar({
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
       {/* Date Filter */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button 
             variant="outline" 
-            className="h-10 px-4 bg-secondary/50 border-border hover:bg-secondary hover:border-primary/50 transition-all"
+            className="h-8 sm:h-10 px-2 sm:px-4 bg-secondary/50 border-border hover:bg-secondary hover:border-primary/50 transition-all text-xs sm:text-sm"
           >
-            <CalendarDays className="w-4 h-4 mr-2 text-primary" />
-            <span className="text-sm">{getDateFilterDisplay()}</span>
-            <ChevronDown className="w-4 h-4 ml-2 text-muted-foreground" />
+            <CalendarDays className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-primary" />
+            <span>{getDateFilterDisplay()}</span>
+            <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1 sm:ml-2 text-muted-foreground" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-48">
-          {(Object.keys(dateFilterLabels) as DateFilterType[]).map((type) => (
+          {(Object.keys(dateFilterLabelsFull) as DateFilterType[]).map((type) => (
             <DropdownMenuItem
               key={type}
               onClick={() => handleDateFilterSelect(type)}
@@ -99,7 +107,7 @@ export function FilterBar({
                 dateFilter.type === type && 'bg-primary/10 text-primary'
               )}
             >
-              {dateFilterLabels[type]}
+              {dateFilterLabelsFull[type]}
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
@@ -144,41 +152,43 @@ export function FilterBar({
       </Popover>
 
       {/* Client Filter */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button 
-            variant="outline" 
-            className="h-10 px-4 bg-secondary/50 border-border hover:bg-secondary hover:border-primary/50 transition-all"
-          >
-            <Phone className="w-4 h-4 mr-2 text-primary" />
-            <span className="text-sm">{selectedClientLabel}</span>
-            <ChevronDown className="w-4 h-4 ml-2 text-muted-foreground" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-56">
-          <DropdownMenuItem
-            onClick={() => onClientChange(null)}
-            className={cn(
-              'cursor-pointer',
-              selectedClient === null && 'bg-primary/10 text-primary'
-            )}
-          >
-            Todos os clientes
-          </DropdownMenuItem>
-          {clients.map((client) => (
+      {clients.length > 0 && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button 
+              variant="outline" 
+              className="h-8 sm:h-10 px-2 sm:px-4 bg-secondary/50 border-border hover:bg-secondary hover:border-primary/50 transition-all text-xs sm:text-sm"
+            >
+              <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-primary" />
+              <span className="max-w-[80px] sm:max-w-none truncate">{selectedClientLabel}</span>
+              <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1 sm:ml-2 text-muted-foreground" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-56">
             <DropdownMenuItem
-              key={client.id}
-              onClick={() => onClientChange(client.id)}
+              onClick={() => onClientChange(null)}
               className={cn(
-                'cursor-pointer font-mono text-sm',
-                selectedClient === client.id && 'bg-primary/10 text-primary'
+                'cursor-pointer',
+                selectedClient === null && 'bg-primary/10 text-primary'
               )}
             >
-              {client.label}
+              Todos os clientes
             </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+            {clients.map((client) => (
+              <DropdownMenuItem
+                key={client.id}
+                onClick={() => onClientChange(client.id)}
+                className={cn(
+                  'cursor-pointer font-mono text-sm',
+                  selectedClient === client.id && 'bg-primary/10 text-primary'
+                )}
+              >
+                {client.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </div>
   );
 }

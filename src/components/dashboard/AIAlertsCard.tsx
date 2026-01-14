@@ -57,7 +57,7 @@ export function AIAlertsCard({ alerts }: AIAlertsCardProps) {
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const scrollAmount = scrollRef.current.clientWidth / 3;
+      const scrollAmount = scrollRef.current.clientWidth / 2;
       scrollRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth'
@@ -66,13 +66,13 @@ export function AIAlertsCard({ alerts }: AIAlertsCardProps) {
   };
 
   return (
-    <div className="card-float p-4 opacity-0 animate-fade-up" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <Bot className="w-4 h-4 text-primary" />
+    <div className="card-float p-3 sm:p-4 opacity-0 animate-fade-up" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10">
+            <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
           </div>
-          <h2 className="text-sm font-semibold text-foreground">Avisos da IA</h2>
+          <h2 className="text-xs sm:text-sm font-semibold text-foreground">Avisos da IA</h2>
         </div>
         
         <div className="flex items-center gap-1">
@@ -80,32 +80,32 @@ export function AIAlertsCard({ alerts }: AIAlertsCardProps) {
             onClick={() => scroll('left')}
             disabled={!canScrollLeft}
             className={cn(
-              'p-1.5 rounded-lg transition-all',
+              'p-1 sm:p-1.5 rounded-lg transition-all',
               canScrollLeft 
                 ? 'hover:bg-secondary text-foreground' 
                 : 'text-muted-foreground/30 cursor-not-allowed'
             )}
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
           <button
             onClick={() => scroll('right')}
             disabled={!canScrollRight}
             className={cn(
-              'p-1.5 rounded-lg transition-all',
+              'p-1 sm:p-1.5 rounded-lg transition-all',
               canScrollRight 
                 ? 'hover:bg-secondary text-foreground' 
                 : 'text-muted-foreground/30 cursor-not-allowed'
             )}
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>
 
       <div 
         ref={scrollRef}
-        className="flex gap-3 overflow-x-auto scrollbar-hide pb-1"
+        className="flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide pb-1"
         style={{ scrollSnapType: 'x mandatory' }}
       >
         {alerts.length === 0 ? (
@@ -122,31 +122,31 @@ export function AIAlertsCard({ alerts }: AIAlertsCardProps) {
               <div
                 key={alert.id}
                 className={cn(
-                  'flex-shrink-0 w-[calc(33.333%-8px)] min-w-[280px] p-3 rounded-lg border border-border transition-all hover:border-primary/30',
+                  'flex-shrink-0 w-[240px] sm:w-[280px] md:w-[calc(33.333%-8px)] min-w-[240px] p-2.5 sm:p-3 rounded-lg border border-border transition-all hover:border-primary/30',
                   config.class,
                   config.bgClass
                 )}
                 style={{ scrollSnapAlign: 'start' }}
               >
-                <div className="flex items-start gap-2.5">
+                <div className="flex items-start gap-2">
                   <Icon className={cn(
-                    'w-4 h-4 mt-0.5 shrink-0',
+                    'w-3.5 h-3.5 sm:w-4 sm:h-4 mt-0.5 shrink-0',
                     alert.prioridade === 'baixa' && 'text-success',
                     alert.prioridade === 'media' && 'text-warning',
                     alert.prioridade === 'alta' && 'text-destructive'
                   )} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-foreground leading-relaxed line-clamp-2">
+                    <p className="text-[11px] sm:text-xs text-foreground leading-relaxed line-clamp-2">
                       {alert.aviso}
                     </p>
-                    <div className="flex items-center gap-2 mt-2">
+                    <div className="flex items-center gap-2 mt-1.5 sm:mt-2">
                       <span className={cn(
-                        'text-[9px] font-medium px-1.5 py-0.5 rounded-full uppercase tracking-wide',
+                        'text-[8px] sm:text-[9px] font-medium px-1.5 py-0.5 rounded-full uppercase tracking-wide',
                         config.labelClass
                       )}>
                         {config.label}
                       </span>
-                      <span className="text-[10px] text-muted-foreground">
+                      <span className="text-[9px] sm:text-[10px] text-muted-foreground">
                         {format(new Date(alert.created_at), "dd MMM", { locale: ptBR })}
                       </span>
                     </div>

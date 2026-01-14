@@ -26,9 +26,9 @@ export function KPICard({
 }: KPICardProps) {
   const getTrendIcon = () => {
     if (!trend) return null;
-    if (trend.value > 0) return <TrendingUp className="w-4 h-4" />;
-    if (trend.value < 0) return <TrendingDown className="w-4 h-4" />;
-    return <Minus className="w-4 h-4" />;
+    if (trend.value > 0) return <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />;
+    if (trend.value < 0) return <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4" />;
+    return <Minus className="w-3 h-3 sm:w-4 sm:h-4" />;
   };
 
   const getTrendClass = () => {
@@ -67,35 +67,35 @@ export function KPICard({
   return (
     <div 
       className={cn(
-        'card-float p-4 opacity-0 animate-fade-up',
+        'card-float p-3 sm:p-4 opacity-0 animate-fade-up',
         getVariantStyles()
       )}
       style={{ animationDelay: `${delay}ms`, animationFillMode: 'forwards' }}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0 space-y-1">
-          <p className="kpi-label">{title}</p>
+      <div className="flex items-start justify-between gap-2 sm:gap-3">
+        <div className="flex-1 min-w-0 space-y-0.5 sm:space-y-1">
+          <p className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wide">{title}</p>
           <p className={cn(
-            'kpi-value',
+            'text-base sm:text-xl lg:text-2xl font-bold tracking-tight truncate',
             variant === 'positive' && 'text-success',
             variant === 'negative' && 'text-destructive'
           )}>
             {value}
           </p>
           {subtitle && (
-            <p className="text-[10px] text-muted-foreground truncate">{subtitle}</p>
+            <p className="text-[9px] sm:text-[10px] text-muted-foreground truncate">{subtitle}</p>
           )}
           {trend && (
-            <div className="flex items-center gap-2">
-              <div className={cn('flex items-center gap-1 text-xs font-medium', getTrendClass())}>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <div className={cn('flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-xs font-medium', getTrendClass())}>
                 {getTrendIcon()}
                 <span>{Math.abs(trend.value)}%</span>
               </div>
-              <p className="text-[10px] text-muted-foreground truncate">{trend.label}</p>
+              <p className="text-[9px] sm:text-[10px] text-muted-foreground truncate">{trend.label}</p>
             </div>
           )}
         </div>
-        <div className={cn('p-2 rounded-lg shrink-0', getIconBg())}>
+        <div className={cn('p-1.5 sm:p-2 rounded-lg shrink-0', getIconBg())}>
           {icon}
         </div>
       </div>
