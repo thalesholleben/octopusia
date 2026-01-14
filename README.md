@@ -164,7 +164,7 @@ Este repositório tem como objetivo:
 
 ## 👤 Autor
 
-**Thales Gomes**  
+**Thales Gomes**  @thalesgomes.ia
 Automação, IA e Sistemas Inteligentes  
 
 ---
