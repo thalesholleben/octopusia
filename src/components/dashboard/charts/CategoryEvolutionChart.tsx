@@ -13,6 +13,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { BarChart3 } from 'lucide-react';
 
 interface CategoryEvolutionChartProps {
   data: FinanceRecord[];
@@ -22,20 +23,6 @@ export function CategoryEvolutionChart({ data }: CategoryEvolutionChartProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showIncome, setShowIncome] = useState(false);
 
-  // Get categories that have data
-  const categoriesWithData = useMemo(() => {
-    const expenseCategories = new Set(
-      data.filter(r => r.tipo === 'saida').map(r => r.categoria)
-    );
-    const incomeCategories = new Set(
-      data.filter(r => r.tipo === 'entrada').map(r => r.categoria)
-    );
-    return {
-      expense: EXPENSE_CATEGORIES.filter(c => expenseCategories.has(c)),
-      income: INCOME_CATEGORIES.filter(c => incomeCategories.has(c)),
-    };
-  }, [data]);
-
   const chartData = useMemo(() => {
     // Group data by month
     const monthlyData: Record<string, { saidas: number; entradas: number }> = {};
@@ -44,9 +31,11 @@ export function CategoryEvolutionChart({ data }: CategoryEvolutionChartProps) {
       const date = parseISO(record.data_comprovante);
       const monthKey = format(date, 'yyyy-MM');
       
-      // Filter by category if selected
-      if (selectedCategory !== 'all' && record.categoria !== selectedCategory) {
-        return;
+      // Filter by category if selected (not 'all')
+      if (selectedCategory !== 'all') {
+        if (record.categoria !== selectedCategory) {
+          return;
+        }
       }
 
       if (!monthlyData[monthKey]) {
@@ -71,8 +60,11 @@ export function CategoryEvolutionChart({ data }: CategoryEvolutionChartProps) {
       }));
   }, [data, selectedCategory]);
 
+  // Determine if selected category is expense type
   const isExpenseCategory = selectedCategory === 'all' || 
     (EXPENSE_CATEGORIES as readonly string[]).includes(selectedCategory);
+  
+  const isIncomeCategory = (INCOME_CATEGORIES as readonly string[]).includes(selectedCategory);
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -90,11 +82,13 @@ export function CategoryEvolutionChart({ data }: CategoryEvolutionChartProps) {
     return null;
   };
 
+  const hasData = chartData.length > 0 && chartData.some(d => d.saidas > 0 || d.entradas > 0);
+
   return (
-    <div className="card-float p-6 h-[400px] flex flex-col opacity-0 animate-fade-up" style={{ animationDelay: '1200ms', animationFillMode: 'forwards' }}>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 shrink-0">
-        <h3 className="text-lg font-semibold text-foreground">Evolução por Categoria</h3>
-        <div className="flex items-center gap-4">
+    <div className="card-float p-4 sm:p-6 h-[350px] sm:h-[400px] flex flex-col opacity-0 animate-fade-up" style={{ animationDelay: '1200ms', animationFillMode: 'forwards' }}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 shrink-0">
+        <h3 className="text-base sm:text-lg font-semibold text-foreground">Evolução por Categoria</h3>
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <div className="flex items-center gap-2">
             <Switch 
               id="showIncome" 
@@ -102,54 +96,51 @@ export function CategoryEvolutionChart({ data }: CategoryEvolutionChartProps) {
               onCheckedChange={setShowIncome}
             />
             <Label htmlFor="showIncome" className="text-xs text-muted-foreground cursor-pointer">
-              Mostrar Entradas
+              Entradas
             </Label>
           </div>
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-[160px] h-8 text-xs">
+            <SelectTrigger className="w-[140px] sm:w-[160px] h-8 text-xs">
               <SelectValue placeholder="Categoria" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all" className="text-xs font-medium">
-                Todas as Categorias
+                Todas Categorias
               </SelectItem>
-              {categoriesWithData.expense.length > 0 && (
-                <>
-                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">
-                    Saídas
-                  </div>
-                  {categoriesWithData.expense.map(cat => (
-                    <SelectItem key={cat} value={cat} className="text-xs">
-                      {cat}
-                    </SelectItem>
-                  ))}
-                </>
-              )}
-              {categoriesWithData.income.length > 0 && (
-                <>
-                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">
-                    Entradas
-                  </div>
-                  {categoriesWithData.income.map(cat => (
-                    <SelectItem key={cat} value={cat} className="text-xs">
-                      {cat}
-                    </SelectItem>
-                  ))}
-                </>
-              )}
+              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">
+                Saídas
+              </div>
+              {EXPENSE_CATEGORIES.map(cat => (
+                <SelectItem key={cat} value={cat} className="text-xs">
+                  {cat}
+                </SelectItem>
+              ))}
+              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-2">
+                Entradas
+              </div>
+              {INCOME_CATEGORIES.map(cat => (
+                <SelectItem key={cat} value={cat} className="text-xs">
+                  {cat}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
       </div>
       
-      {chartData.length === 0 ? (
-        <div className="flex-1 flex items-center justify-center text-muted-foreground">
-          Nenhum dado disponível para o período selecionado
+      {!hasData ? (
+        <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground gap-3">
+          <BarChart3 className="w-12 h-12 opacity-30" />
+          <p className="text-sm text-center">
+            {selectedCategory === 'all' 
+              ? 'Nenhum dado disponível para o período' 
+              : `Sem dados para "${selectedCategory}"`}
+          </p>
         </div>
       ) : (
-        <div className="flex-1">
+        <div className="flex-1 min-h-0">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorSaidasEvol" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="hsl(var(--destructive))" stopOpacity={0.4}/>
@@ -164,18 +155,18 @@ export function CategoryEvolutionChart({ data }: CategoryEvolutionChartProps) {
                 dataKey="monthFormatted" 
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
               />
               <YAxis 
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
-                tickFormatter={(value) => value >= 1000 ? `R$${(value/1000).toFixed(0)}k` : `R$${value}`}
-                width={55}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                tickFormatter={(value) => value >= 1000 ? `${(value/1000).toFixed(0)}k` : `${value}`}
+                width={45}
               />
               <Tooltip content={<CustomTooltip />} />
               
-              {isExpenseCategory && (
+              {(isExpenseCategory || selectedCategory === 'all') && !isIncomeCategory && (
                 <Area
                   type="monotone"
                   dataKey="saidas"
@@ -183,12 +174,12 @@ export function CategoryEvolutionChart({ data }: CategoryEvolutionChartProps) {
                   stroke="hsl(var(--destructive))"
                   strokeWidth={2}
                   fill="url(#colorSaidasEvol)"
-                  dot={{ fill: 'hsl(var(--destructive))', strokeWidth: 0, r: 4 }}
-                  activeDot={{ r: 6, strokeWidth: 0 }}
+                  dot={{ fill: 'hsl(var(--destructive))', strokeWidth: 0, r: 3 }}
+                  activeDot={{ r: 5, strokeWidth: 0 }}
                 />
               )}
               
-              {showIncome && (
+              {(showIncome || isIncomeCategory) && (
                 <Area
                   type="monotone"
                   dataKey="entradas"
@@ -196,8 +187,8 @@ export function CategoryEvolutionChart({ data }: CategoryEvolutionChartProps) {
                   stroke="hsl(var(--success))"
                   strokeWidth={2}
                   fill="url(#colorEntradasEvol)"
-                  dot={{ fill: 'hsl(var(--success))', strokeWidth: 0, r: 4 }}
-                  activeDot={{ r: 6, strokeWidth: 0 }}
+                  dot={{ fill: 'hsl(var(--success))', strokeWidth: 0, r: 3 }}
+                  activeDot={{ r: 5, strokeWidth: 0 }}
                 />
               )}
             </AreaChart>
