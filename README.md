@@ -1,73 +1,170 @@
-# Welcome to your Lovable project
+# 🐙 Octopus IA – Finance Hub
 
-## Project info
+**Seu dashboard financeiro pessoal integrado ao WhatsApp.**
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Octopus IA é um **hub financeiro moderno, seguro e responsivo**, criado para centralizar o controle financeiro pessoal a partir de registros enviados via WhatsApp e visualizados em um dashboard estilo fintech.
 
-## How can I edit this code?
+Nada de planilhas.  
+Nada de sistemas engessados.  
+Aqui o usuário conversa. A IA organiza. O dashboard mostra.
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 🚀 Visão Geral
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+O Octopus IA foi projetado como a base de um **SaaS de controle financeiro pessoal**, com foco em simplicidade, clareza visual e automação.
 
-Changes made via Lovable will be committed automatically to this repo.
+O sistema permite:
+- Registrar entradas e saídas financeiras via WhatsApp
+- Armazenar os dados em banco estruturado
+- Visualizar indicadores financeiros em tempo real
+- Receber alertas e insights gerados por IA
+- Acessar tudo por um painel web protegido por autenticação
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🧠 Funcionamento (Fluxo Geral)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. O usuário envia mensagens financeiras pelo WhatsApp  
+   Exemplo:  
+   > “Gastei 120 no mercado hoje”
 
-Follow these steps:
+2. O backend processa e armazena os dados no PostgreSQL
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+3. O dashboard consome essas informações e exibe:
+   - KPIs financeiros
+   - Gráficos e rankings
+   - Alertas gerados por IA
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+4. O acesso ao painel é restrito a usuários autenticados
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## 📊 Funcionalidades
 
-**Edit a file directly in GitHub**
+### Dashboard Financeiro
+- KPIs principais:
+  - Saldo atual
+  - Total de entradas
+  - Total de saídas
+  - Gastos do mês
+  - Média mensal
+  - Investimentos
+- Cards compactos para maior densidade de informação
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Gráficos
+- Evolução financeira ao longo do tempo
+- Comparativo mensal dos últimos 6 meses
+- Distribuição de gastos por categoria
+- Evolução por categoria com seletor dinâmico
+- Ranking de maiores gastos com scroll interno
 
-**Use GitHub Codespaces**
+### Avisos da IA
+- Alertas financeiros automáticos
+- Classificação por prioridade (baixa, média, alta)
+- Exibição em carrossel compacto
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Autenticação
+- Tela de login dedicada
+- Rotas protegidas
+- Controle de sessão
+- Botão de logout no dashboard
+- Redirecionamento automático para login
 
-## What technologies are used for this project?
+### Responsividade
+- Desktop
+- Tablet
+- Mobile  
+Interface adaptada para todos os tamanhos de tela.
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
+## 🛠️ Stack Tecnológica
+
+### Frontend
 - React
-- shadcn-ui
+- TypeScript
 - Tailwind CSS
+- Chart.js / Recharts
+- Design system dark customizado
 
-## How can I deploy this project?
+### Backend
+- PostgreSQL
+- Autenticação integrada
+- Row Level Security (RLS)
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
+## 🗄️ Estrutura do Banco de Dados
 
-Yes, you can!
+### finance_records
+Armazena os registros financeiros dos usuários:
+- valor
+- tipo (entrada / saída)
+- categoria
+- data do comprovante
+- timestamps
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### ai_alerts
+Armazena alertas e insights gerados pela IA:
+- texto do aviso
+- prioridade
+- timestamps
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+### profiles
+Dados de perfil do usuário autenticado:
+- display_name
+- vínculo com auth
+
+Todas as tabelas utilizam **Row Level Security**, garantindo que cada usuário acesse apenas seus próprios dados.
+
+---
+
+## 🔒 Segurança
+
+- Autenticação obrigatória
+- Isolamento total de dados por usuário
+- Rotas protegidas
+- Nenhum dado financeiro é acessível sem login
+
+---
+
+## 📦 Estado Atual do Projeto
+
+✔ Interface finalizada  
+✔ Autenticação funcionando  
+✔ Banco de dados estruturado  
+✔ Gráficos dinâmicos  
+✔ Responsividade ajustada  
+
+🚧 Integração direta com WhatsApp não incluída neste repositório  
+🚧 Camada de IA pode ser expandida
+
+Este projeto serve como **base sólida para evolução de um SaaS financeiro completo**.
+
+---
+
+## 🧪 Modo Demonstração
+
+- Caso não existam dados no banco, o sistema exibe estados vazios
+- Gráficos mostram mensagens como “Sem dados disponíveis”
+- Ideal para testes e apresentações
+
+---
+
+## 🎯 Objetivo do Projeto
+
+Este repositório tem como objetivo:
+- Demonstrar a arquitetura de um Finance Hub moderno
+- Servir como base para um SaaS financeiro integrado ao WhatsApp
+- Aplicar boas práticas de UI, UX e segurança
+- Evoluir para um produto comercial
+
+---
+
+## 👤 Autor
+
+**Thales Gomes**  
+Automação, IA e Sistemas Inteligentes  
+
+---
