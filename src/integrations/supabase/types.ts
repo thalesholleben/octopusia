@@ -14,7 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ai_alerts: {
+        Row: {
+          aviso: string
+          created_at: string
+          id: string
+          prioridade: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          aviso: string
+          created_at?: string
+          id?: string
+          prioridade: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          aviso?: string
+          created_at?: string
+          id?: string
+          prioridade?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      finance_records: {
+        Row: {
+          categoria: string
+          created_at: string
+          data_comprovante: string
+          de: string
+          id: string
+          para: string
+          tipo: string
+          user_id: string
+          valor: number
+        }
+        Insert: {
+          categoria: string
+          created_at?: string
+          data_comprovante: string
+          de: string
+          id?: string
+          para: string
+          tipo: string
+          user_id: string
+          valor: number
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          data_comprovante?: string
+          de?: string
+          id?: string
+          para?: string
+          tipo?: string
+          user_id?: string
+          valor?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
